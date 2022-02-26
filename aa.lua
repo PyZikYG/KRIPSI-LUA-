@@ -48,7 +48,7 @@ local ui_element = {
 local autosmoke = ui.new_checkbox("AA", "Other", "Auto-Smoke")
 local hk_autosmoke = ui.new_hotkey("AA", "Other", "Auto-Smoke key", true)
     
-local label = ui.new_label("AA", "Anti-aimbot angles",'---- KRIPSI AA LUA SECTION ENDED  ----')
+
 local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION ENDED  ----')
 
 
