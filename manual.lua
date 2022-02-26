@@ -22,6 +22,7 @@ local color  = ui.new_color_picker("AA", "Anti-aimbot angles", "Indicator color"
 local back = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] BACK")
 local left = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] LEFT")
 local right = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] RIGHT")
+
 local label = ui.new_label("AA", "Anti-aimbot angles",'---- KRIPSI AA LUA SECTION ENDED  ----')
 
 
