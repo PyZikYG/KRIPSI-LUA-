@@ -15,14 +15,13 @@ local freestanding = ui.reference("AA", "Anti-aimbot angles", "Freestanding body
 
 
 --the stuff we need to begin with
-local enabled = ui.new_checkbox("LUA", "B", "Enable AA")
-local color  = ui.new_color_picker("LUA", "B", "Indicator color", 235, 146, 52, 255)
+local enabled = ui.new_checkbox("AA", "Anti-aimbot angles", "Enable AA")
+local color  = ui.new_color_picker("AA", "Anti-aimbot angles", "Indicator color", 235, 146, 52, 255)
 
 --fixed the multiselect stupid stuff and now its combobox
-local option = ui.new_combobox("LUA", "B", "AA Options", "Manual AA")
-local back = ui.new_hotkey("LUA", "B", "[M] BACK")
-local left = ui.new_hotkey("LUA", "B", "[M] LEFT")
-local right = ui.new_hotkey("LUA", "B", "[M] RIGHT")
+local back = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] BACK")
+local left = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] LEFT")
+local right = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] RIGHT")
 
 
 
@@ -50,11 +49,8 @@ end
 
 local function handleGUI()
     local enabled = ui.get(enabled)
-    setTableVisibility({color, option}, enabled)
-    setTableVisibility({back, left, right}, enabled and ui.get(option) == "Manual AA")
-  
-    
-
+    setTableVisibility({color}, enabled)
+    setTableVisibility({back, left, right}, enabled)
 end
 
 --locals for manual aa and indicators
@@ -71,7 +67,7 @@ local function runCommand()
 
 
 --manual aa // i didnt do this, pewds3 and kez2474 did
-    if ui.get(option) == "Manual AA" then
+    if ui.get(enabled) == true then
         if ui.get(back) then
             mode = "back"
         elseif ui.get(left) and leftReady then
@@ -121,7 +117,7 @@ local function paint()
 
     local color_g = {ui.get(color)}
 
-    if ui.get(option) == "Manual AA" then
+    if ui.get(enabled) == true then
         renderer.text(center[1], center[2] + 43, 45, 45, 45, 255, "cb+", 0, "v" )
         renderer.text(center[1] - 43, center[2] - 3, 45, 45, 45, 255, "cb+", 0, "<" )
         renderer.text(center[1] + 43, center[2] - 3, 45, 45, 45, 255, "cb+", 0, ">" )
