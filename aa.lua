@@ -445,7 +445,7 @@ local function Clown_aa()
 	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
 	if ui.get(slow_walk) and ui.get(slow_walk2) then
         --slowwalk
-        ui.set(pitch, "Up")
+        ui.set(pitch, "Default")
         ui.set(yawbase, "At targets")
         ui.set(yaw, 180)
         ui.set(yawbody, "Spin")
@@ -458,7 +458,7 @@ local function Clown_aa()
         state = "SLOWWALK"
     elseif flags == 263 and velocity < 250 then
         --crouch
-        ui.set(pitch, "Up")
+        ui.set(pitch, "Default")
         ui.set(yawbase, "At targets")
         ui.set(yaw, 180)
         ui.set(yawbody, "Spin")
@@ -471,7 +471,7 @@ local function Clown_aa()
         state = "CROUCH"
     elseif flags == 256 or flags == 262 or velocity > 250 then
         --air
-        ui.set(pitch, "Up")
+        ui.set(pitch, "Default")
         ui.set(yawbase, "At targets")
         ui.set(yaw, 180)
         ui.set(yawbody, "Spin")
@@ -484,7 +484,7 @@ local function Clown_aa()
         state = "AIR"
     elseif flags == 257 and velocity > 10 and velocity < 250 then
         --moving
-        ui.set(pitch, "Up")
+        ui.set(pitch, "Default")
         ui.set(yawbase, "At targets")
         ui.set(yaw, 180)
         ui.set(yawbody, "Spin")
@@ -497,7 +497,7 @@ local function Clown_aa()
         state = "MOVING"
     else
         --stand
-        ui.set(pitch, "Up   ")
+        ui.set(pitch, "Default")
         ui.set(yawbase, "At targets")
         ui.set(yaw, 180)
         ui.set(yawbody, "Spin")
