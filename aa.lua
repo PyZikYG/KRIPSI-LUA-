@@ -22,11 +22,9 @@ client.color_log(255, 255, 255, "|----------------------------------------------
 
 local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION STARTED  ----')
 
-local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Gamesense AA", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "Clown aa"})
-local inverter = ui.new_hotkey("AA", "Anti-aimbot angles", "DDOS Legit aa on key")
-local master = ui.new_checkbox("AA", "Anti-aimbot angles", "Roll aa Enable")
-local idk = ui.new_hotkey("AA", "Anti-aimbot angles", "Roll aa on key")         
-local int = ui.new_slider("AA", "Anti-aimbot angles", "Desync Exploit Value", -50   , 50, 50)
+local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Gamesense AA", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa"})
+
+   
 local menu = {
     enabled = ui.new_checkbox("AA", "Other", "Crosshair indicator"),
     s_offset = ui.new_slider("AA", "Other", "\nHitlog offset", -500, 500, 20, true, "px"),
@@ -64,6 +62,8 @@ local freestanding, freestanding2 = ui.reference("AA", "Anti-aimbot angles", "Fr
 local fyawlimit = ui.reference("AA", "Anti-aimbot angles", "Fake yaw limit")
 local freestand_byaw = ui.reference("AA", "Anti-aimbot angles", "Freestanding body yaw")
 local slow_walk, slow_walk2 = ui.reference("AA", "Other", "Slow motion")
+local Desync = ui_reference("aa", "anti-aimbot angles", "Roll")
+
 
 -- this is here for debugging or indicators whatever you want idgaf
 local state = "NONE"
@@ -511,6 +511,81 @@ local function Clown_aa()
     end
 end
 
+--White aa
+local function White_aa()
+	local localplayer = entity.get_local_player()
+	local flags = entity.get_prop(localplayer, "m_fFlags")
+	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
+	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
+	if ui.get(slow_walk) and ui.get(slow_walk2) then
+        --slowwalk
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 0)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 25)
+        ui.set(bodyyaw, "Jitter")
+        ui.set(bodyyaw2, 0)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "SLOWWALK"
+    elseif flags == 263 and velocity < 250 then
+        --crouch
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 0)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 25)
+        ui.set(bodyyaw, "Jitter")
+        ui.set(bodyyaw2, 0)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "CROUCH"
+    elseif flags == 256 or flags == 262 or velocity > 250 then
+        --air
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 0)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 25)
+        ui.set(bodyyaw, "Jitter")
+        ui.set(bodyyaw2, 0)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "AIR"
+    elseif flags == 257 and velocity > 10 and velocity < 250 then
+        --moving
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 0)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 25)
+        ui.set(bodyyaw, "Jitter")
+        ui.set(bodyyaw2, 0)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "MOVING"
+    else
+        --stand
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 0)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 25)
+        ui.set(bodyyaw, "Jitter")
+        ui.set(bodyyaw2, 0)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "STAND"
+    end
+end
+
+
 
 --on_run_command
 local function run_command()
@@ -528,6 +603,7 @@ local function run_command()
 	    ui.set_visible(freestanding2, true)
 	    ui.set_visible(fyawlimit, true)
 	    ui.set_visible(freestand_byaw, true)
+        ui.set_visible(Desync, false)
     else
     	ui.set_visible(yawbody, false)
 	    ui.set_visible(yaw, false)
@@ -542,8 +618,10 @@ local function run_command()
 	    ui.set_visible(freestanding2, true)
 	    ui.set_visible(fyawlimit, false)
 	    ui.set_visible(freestand_byaw, false)
+        ui.set_visible(Desync, false)
+        
     end
-
+    
     if ui.get(preset_choice) == "Acatel.us" then
     	acatel_us_aa()
     elseif ui.get(preset_choice) == "Sigma Prediction" then
@@ -554,6 +632,8 @@ local function run_command()
     	DrainYaw()
     elseif ui.get(preset_choice) == "Clown aa" then
     	Clown_aa()
+    elseif ui.get(preset_choice) == "White aa" then
+    	White_aa()
     end
 end
 
@@ -586,39 +666,8 @@ end
 
 
 
---Legit aa
----------------------------------------------------
 
-client.set_event_callback("setup_command", function(info)
-    if info.in_use == 1 then 
-        if info.in_grenade1 == 1 or info.in_grenade2 == 1 or info.in_attack == 1 then return end
-        local cam_anglesx, cam_anglesy, cam_anglesr = client.camera_angles()
-        local tick_count = globals.tickcount() % 3
-        if ui.get(inverter) then
-            if tick_count == 1 then
-                info.yaw = cam_anglesy + 120
-                info.allow_send_packet = false
-            elseif tick_count == 2 then
-                info.yaw = cam_anglesy - 120
-                info.allow_send_packet = false
-            else
-                info.yaw = cam_anglesy
-                info.allow_send_packet = true
-            end
-        else
-            if tick_count == 1 then
-                info.yaw = cam_anglesy - 120
-                info.allow_send_packet = false
-            elseif tick_count == 2 then
-                info.yaw = cam_anglesy + 120
-                info.allow_send_packet = false
-            else
-                info.yaw = cam_anglesy
-                info.allow_send_packet = true
-            end
-        end
-    end
-end)
+
 
 
 
@@ -627,25 +676,22 @@ end)
 
 
 ----Roll AA
-local ui_get = ui.get
+local roll = ui.reference('AA', 'Anti-aimbot angles', 'Roll')
 
+local force_roll_angle = ui.new_slider('AA', 'Anti-aimbot angles', 'Roll', -50, 50, 0)
+local active_roll = ui.new_hotkey('AA', 'Anti-aimbot angles', 'Roll on key \nhotkey', false)
 
+client.set_event_callback('setup_command', function(cmd)
+   local active_roll = ui.get(active_roll)
+   local roll_angle = ui.get(force_roll_angle)
 
-function desync(cmd)
-    if ui_get(master)then
-        local localplayer = entity.get_local_player
-        local vx, vy, vz = entity.get_prop(localplayer(), 'm_vecVelocity')    
-        if  math.abs(vx) < 5 and math.abs(vy) < 5 and math.abs(vz) < 5 and not ui_get(idk)then
-            cmd.roll = ui_get(int)
-        elseif ui_get(idk) then
-            cmd.roll = ui_get(int)
-        end
-    end
-end
-
-client.set_event_callback('setup_command', desync)
-
-
+   if active_roll then
+      ui.set(roll, 0)
+      cmd.roll = roll_angle
+   else
+      ui.set(roll, roll_angle)
+   end
+end)
 
 
 ---CRINGE INDICATORS
