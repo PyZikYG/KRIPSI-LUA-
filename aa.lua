@@ -19,7 +19,7 @@ client.color_log(215, 115, 222, "                      Pasted by KRIPSI#5061    
 client.color_log(235, 221, 21,  "                    Last Updated: 24/02/2022.               ")
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 -- our menu elements :D
-local label = ui.new_label("AA", "Anti-aimbot angles",'---- KRIPSI AA LUA SECTION STARTED  ----')
+
 local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION STARTED  ----')
 
 local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Gamesense AA", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "Clown aa"})
