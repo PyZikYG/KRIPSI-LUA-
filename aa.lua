@@ -22,7 +22,7 @@ client.color_log(255, 255, 255, "|----------------------------------------------
 
 local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION STARTED  ----')
 
-local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Gamesense AA", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa"})
+local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Tap to preset", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa"})
 
    
 local menu = {
@@ -589,20 +589,20 @@ end
 
 --on_run_command
 local function run_command()
-	if ui.get(preset_choice) == "Gamesense AA" then
-		ui.set_visible(yawbody, true)
-	    ui.set_visible(yaw, true)
-	    ui.set_visible(bodyyaw, true)
-	    ui.set_visible(bodyyaw2, true)
+	if ui.get(preset_choice) == "Tap to preset" then
+		ui.set_visible(yawbody, false)
+	    ui.set_visible(yaw, false)
+	    ui.set_visible(bodyyaw, false)
+	    ui.set_visible(bodyyaw2, false)
 	    ui.set_visible(edge, true)
-	    ui.set_visible(jyaw, true)
-	    ui.set_visible(jyawslide, true)
-	    ui.set_visible(pitch, true)
-	    ui.set_visible(yawbase, true)
+	    ui.set_visible(jyaw, false)
+	    ui.set_visible(jyawslide, false)
+	    ui.set_visible(pitch, false)
+	    ui.set_visible(yawbase, false)
 	    ui.set_visible(freestanding, true)
 	    ui.set_visible(freestanding2, true)
-	    ui.set_visible(fyawlimit, true)
-	    ui.set_visible(freestand_byaw, true)
+	    ui.set_visible(fyawlimit, false)
+	    ui.set_visible(freestand_byaw, false)
         ui.set_visible(Desync, false)
     else
     	ui.set_visible(yawbody, false)
