@@ -584,7 +584,7 @@ local function White_aa()
 end
 
 --static
-local function Static()
+local function Static_aa()
 	local localplayer = entity.get_local_player()
 	local flags = entity.get_prop(localplayer, "m_fFlags")
 	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
@@ -596,7 +596,7 @@ local function Static()
         ui.set(yaw, 0)
         ui.set(yawbody, "180")
         ui.set(jyaw, "Offset")
-        ui.set(jyawslide, math.random(0,60))
+        ui.set(jyawslide, math.random(0,61))
         ui.set(bodyyaw, "Jitter")
         ui.set(bodyyaw2, 0)
         ui.set(freestand_byaw, true)
@@ -707,7 +707,7 @@ local function run_command()
     elseif ui.get(preset_choice) == "White aa" then
     	White_aa()
     elseif ui.get(preset_choice) == "Static" then
-    	Static()
+    	Static_aa()
     end
 end
 
