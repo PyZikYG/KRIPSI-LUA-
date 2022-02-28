@@ -583,8 +583,8 @@ local function White_aa()
     end
 end
 
---statis
-local function sigma_prediction_aa()
+--static
+local function Static()
 	local localplayer = entity.get_local_player()
 	local flags = entity.get_prop(localplayer, "m_fFlags")
 	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
@@ -706,6 +706,8 @@ local function run_command()
     	Clown_aa()
     elseif ui.get(preset_choice) == "White aa" then
     	White_aa()
+    elseif ui.get(preset_choice) == "Static" then
+    	Static()
     end
 end
 
