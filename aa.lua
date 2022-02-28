@@ -720,7 +720,7 @@ local api_references = {
 -- Create surface fonts
 local surface_fonts = {
     verdana = surface.create_font("Verdana",18,50,0x200),
-    arial = surface.create_font("Arial",14,50,0x200)
+    arial = surface.create_font("Arial",12,50,0x200)
 }
 
 -- Visuals
