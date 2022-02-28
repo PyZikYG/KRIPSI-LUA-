@@ -16,7 +16,7 @@ local name = persona_api.GetName()
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 client.color_log(21, 235, 220,  "                       Welcome " .. name .. "!            ")
 client.color_log(215, 115, 222, "                      Pasted by KRIPSI#5061                 ")
-client.color_log(235, 221, 21,  "                    Last Updated: 24/02/2022.               ")
+client.color_log(235, 221, 21,  "                    Last Updated: 28/02/2022.               ")
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 -- our menu elements :D
 
@@ -25,11 +25,9 @@ local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION STARTED  
 local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Tap to preset", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa"})
 
    
-local menu = {
-    enabled = ui.new_checkbox("AA", "Other", "Crosshair indicator"),
-    s_offset = ui.new_slider("AA", "Other", "\nHitlog offset", -500, 500, 20, true, "px"),
-    extra = ui.new_checkbox("AA", "Other", "Extra indicators"),
-    color = ui.new_color_picker("AA", "Other", "Extra indicator color", 0, 255, 0, 255)
+-- Create new menu items
+local new_menu_items = {
+    menu_indicatores = ui.new_checkbox("AA", "Other","KRIPSI AA")
 }
 
 local ui_element = {
@@ -694,92 +692,100 @@ client.set_event_callback('setup_command', function(cmd)
 end)
 
 
----CRINGE INDICATORS
-local w, h = client.screen_size()
-local center = { w/2, h/2 }
-local offset = 0
-local r, g, b, a
-local indicators = {}
-local text_flags = "cb"
+
+--indicators
+-- Require ( Importing the code from the library and if the user / you don't have the library it will print this error )
+local surface = require("gamesense/surface") or error("Missing the surface library - https://gamesense.pub/forums/viewtopic.php?id=18793") 
+local vector = require("vector")
+local bit = require("bit")
+local bitband = bit.band
+
+-- Menu references
+doubletap_box, doubletap_bind = ui.reference("RAGE","Other","Double tap")
+thirdperson_box,thirdperson_bind = ui.reference("VISUALS","Effects","Force third person (alive)")
+fake_yaw_limit = ui.reference("AA","Anti-aimbot angles","Fake yaw limit")
+forcebaim_bind = ui.reference("RAGE","Other","Force body aim")
+onshotantiaim_box, onshotantiaim_bind = ui.reference("AA", "Other", "On shot anti-aim")
+duck_peek_assist_bind = ui.reference("RAGE","Other","Duck peek assist")
 
 
 
-local states = {
-    { { ui.reference("AA", "Anti-aimbot angles", "Freestanding") }, "FREESTANDING" },
-    { { ui.reference("AA", "Other", "On shot anti-aim") }, "ONSHOT" },
-    { { ui.reference("RAGE", "Other", "Force body aim") }, "FORCE BAIM" },
-    { { ui.reference("RAGE", "Aimbot", "Force safe point") }, "SAFEPOINT" },
-    { { ui.reference("AA", "Other", "Fake peek") }, "FAKE PEEK"},
+-- API References ( 1 per line, you can not do X, Y = client.screen_size() at least from my experience ) 
+local api_references = {
+    localplayer = entity.get_local_player()
+}
+      
+
+
+-- Create surface fonts
+local surface_fonts = {
+    verdana = surface.create_font("Verdana",18,50,0x200),
+    arial = surface.create_font("Arial",14,50,0x200)
 }
 
-local function bool_to_number(value)
-    return value and 1 or 0
-end
+-- Visuals
+client.set_event_callback("paint", function()   
 
-local function on_indicator(i)
-    table.insert(indicators, i)
-end
+    if ui.get(new_menu_items.menu_indicatores) then
 
-local function on_paint()
-    for i = 1, #indicators do 
-        local cur_i = indicators[i]
-        local y = (offset >= 0) and (center[2] - offset - (i * 12)) or (center[2] - offset + (i * 12))
-        renderer.text(center[1], y, cur_i.r, cur_i.g, cur_i.b, cur_i.a, text_flags, 0, cur_i.text)
-    end
+        --Screen size ( X = width, Y = height )
+        X,Y = client.screen_size()
 
-    if ui.get(menu.extra) then
-        local total_states = #indicators
-        for i = 1, #states do 
-            local active = 0
-            local cur_check = states[i][1]
+        -- hitbox position ( X, Y, Z )
+       head_pos_x,head_pos_y,head_pos_z = entity.hitbox_position(api_references.localplayer,0)
 
-            for n = 1, #cur_check do 
-                local value = ui.get(cur_check[n])
-                local type = type(value)
-                if type == "boolean" then
-                    active = active + bool_to_number(value)
-                elseif type == "table" and value[1] ~= nil then 
-                    active = active + 1
-                end
-            end
-            
-            if active >= #cur_check then
-                total_states = total_states + 1
-                local y = (offset >= 0) and (center[2] - offset - (total_states * 12)) or (center[2] - offset + (total_states * 12))
-                renderer.text(center[1], y, r, g, b, a, text_flags, 0, states[i][2])
-            end
+       -- Transforming the hitbox position into 2D values ( X, Y )
+       world_to_screen_head_x,world_to_screen_head_y = renderer.world_to_screen(head_pos_x,head_pos_y,head_pos_z)
+
+       -- Spacing for our Indicators
+       spacing = 0
+
+       -- If you are in thirdperson it will display the arrows by your head if you are not in thirdperson it will display by your crosshair 
+       -- PS You can use this arrows for those teamskeet , sigma and other luas indicators. Just make a new if and else 
+       if ui.get(thirdperson_box) and ui.get(thirdperson_bind) then
+         
+          
         end
+
+   
+        -- Indicators
+        -- Lua Name
+       surface.draw_text(X/2,Y/2 + 20,255,255,255,255,surface_fonts.arial,"KRIPSI AA") 
+
+       -- If you have Dobule tap enabled
+        if ui.get(doubletap_bind) then
+          surface.draw_text(X/2,Y/2 + 32,150,150,150,255,surface_fonts.arial,"DT")
+
+          -- Adding spacing
+          spacing = spacing + 10
+        end
+
+        -- If you have Force baim enabled
+        if ui.get(forcebaim_bind) then
+            surface.draw_text(X/2,Y/2 + 32 + spacing,150,150,150,255,surface_fonts.arial,"FB")
+
+             -- Adding spacing
+            spacing = spacing + 10
+        end
+
+        -- If you have HideShots tap enabled
+        if ui.get(onshotantiaim_bind) then
+          surface.draw_text(X/2,Y/2 + 32 + spacing,150,150,150,255,surface_fonts.arial,"HS")
+
+          -- Adding spacing
+          spacing = spacing + 10
+        end 
+          -- If you have FakeDuck tap enabled
+        if ui.get(duck_peek_assist_bind) then
+          surface.draw_text(X/2,Y/2 + 32 + spacing,150,150,150,255,surface_fonts.arial,"FD")
+
+          -- Adding spacing
+          spacing = spacing + 10
+        end
+
+          
     end
-
-    indicators = {}
-end
-
-local function cbx_toggle()
-    local state = ui.get(menu.enabled)
-    local update_callback = state and client.set_event_callback or client.unset_event_callback
-    update_callback("indicator", on_indicator)
-    update_callback("paint", on_paint)
-    ui.set_visible(menu.extra, state)
-    ui.set_visible(menu.s_offset, state)
-    ui.set_visible(menu.color, state)
-end
-
-do
-    ui.set_callback(menu.enabled, cbx_toggle)
-    cbx_toggle()
-
-    ui.set_callback(menu.color, function(self)
-        r, g, b, a = ui.get(self)
-    end)
-    r, g, b, a = ui.get(menu.color)
-
-    ui.set_callback(menu.s_offset, function(self)
-        offset = ui.get(self)
-    end)
-    offset = ui.get(menu.s_offset)
-end
-
-
+end)
 
 
 
