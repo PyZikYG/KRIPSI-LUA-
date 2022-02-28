@@ -27,7 +27,7 @@ local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice
    
 -- Create new menu items
 local new_menu_items = {
-    menu_indicatores = ui.new_checkbox("AA", "Other","KRIPSI AA")
+    menu_indicatores = ui.new_checkbox("AA", "Other","Indicators")
 }
 
 local ui_element = {
