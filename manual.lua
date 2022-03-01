@@ -118,18 +118,9 @@ local function paint()
 
     local color_g = {ui.get(color)}
 
-    if ui.get(enabled) == true then
-        renderer.text(center[1], center[2] + 43, 45, 45, 45, 255, "cb+", 0, "v" )
-        renderer.text(center[1] - 43, center[2] - 3, 45, 45, 45, 255, "cb+", 0, "<" )
-        renderer.text(center[1] + 43, center[2] - 3, 45, 45, 45, 255, "cb+", 0, ">" )
+       
 
-        if mode == "back" then
-            renderer.text(center[1], center[2] + 43, color_g[1], color_g[2], color_g[3], color_g[4], "cb+", 0, "v" )
-        elseif mode == "left" then
-            renderer.text(center[1] - 43, center[2] - 3, color_g[1], color_g[2], color_g[3], color_g[4], "cb+", 0, "<" )
-        elseif mode == "right" then
-            renderer.text(center[1] + 43, center[2] - 3, color_g[1], color_g[2], color_g[3], color_g[4], "cb+", 0, ">" )
-        end
+        
     end
 end
 
@@ -139,4 +130,4 @@ end
 
 client.set_event_callback("paint", paint)
 client.set_event_callback("run_command", runCommand) 
-client.set_event_callback("paint_ui", handleGUI)
+client.set_event_callback("paint_ui", handleGUI)  
