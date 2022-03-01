@@ -116,13 +116,13 @@ local function paint()
         return
     end
 
-    local color_g = {ui.get(color)}
+
 
        
 
         
     end
-end
+
 
         
        
