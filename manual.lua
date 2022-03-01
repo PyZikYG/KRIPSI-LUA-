@@ -16,7 +16,7 @@ local freestanding = ui.reference("AA", "Anti-aimbot angles", "Freestanding body
 
 --the stuff we need to begin with
 local enabled = ui.new_checkbox("AA", "Anti-aimbot angles", "Manual AA")
-local color  = ui.new_color_picker("AA", "Anti-aimbot angles", "Indicator color", 235, 146, 52, 255)
+
 
 --fixed the multiselect stupid stuff and now its combobox
 local back = ui.new_hotkey("AA", "Anti-aimbot angles", "[M] BACK")
