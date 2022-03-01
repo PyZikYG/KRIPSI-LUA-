@@ -16,7 +16,7 @@ local name = persona_api.GetName()
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 client.color_log(21, 235, 220,  "                       Welcome " .. name .. "!            ")
 client.color_log(215, 115, 222, "                      Pasted by KRIPSI#5061                 ")
-client.color_log(235, 221, 21,  "                    Last Updated: 28/02/2022.               ")
+client.color_log(235, 221, 21,  "                    Last Updated: 01/03/2022.               ")
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 -- our menu elements :D
 
