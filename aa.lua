@@ -827,11 +827,11 @@ client.set_event_callback("paint", function()
    
         -- Indicators
         -- Lua Name
-       surface.draw_text(X/2,Y/2 + 20,255,255,255,255,surface_fonts.arial,"KRIPSI AA") 
+       surface.draw_text(X/2,Y/2 + 20,355,255,255,255,surface_fonts.arial,"KRIPSI AA") 
 
        -- If you have Dobule tap enabled
         if ui.get(doubletap_bind) then
-          surface.draw_text(X/2,Y/2 + 32,150,150,150,255,surface_fonts.arial,"DT")
+          surface.draw_text(X/2,Y/2 + 32,450,150,150,255,surface_fonts.arial,"DT")
 
           -- Adding spacing
           spacing = spacing + 10
@@ -839,7 +839,7 @@ client.set_event_callback("paint", function()
 
         -- If you have Force baim enabled
         if ui.get(forcebaim_bind) then
-            surface.draw_text(X/2,Y/2 + 32 + spacing,150,150,150,255,surface_fonts.arial,"FB")
+            surface.draw_text(X/2,Y/2 + 32 + spacing,450,150,150,255,surface_fonts.arial,"FB")
 
              -- Adding spacing
             spacing = spacing + 10
@@ -847,14 +847,14 @@ client.set_event_callback("paint", function()
 
         -- If you have HideShots tap enabled
         if ui.get(onshotantiaim_bind) then
-          surface.draw_text(X/2,Y/2 + 32 + spacing,150,150,150,255,surface_fonts.arial,"HS")
+          surface.draw_text(X/2,Y/2 + 32 + spacing,450,150,150,255,surface_fonts.arial,"HS")
 
           -- Adding spacing
           spacing = spacing + 10
         end 
           -- If you have FakeDuck tap enabled
         if ui.get(duck_peek_assist_bind) then
-          surface.draw_text(X/2,Y/2 + 32 + spacing,150,150,150,255,surface_fonts.arial,"FD")
+          surface.draw_text(X/2,Y/2 + 32 + spacing,450,150,150,255,surface_fonts.arial,"FD")
 
           -- Adding spacing
           spacing = spacing + 10
