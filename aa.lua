@@ -22,7 +22,7 @@ client.color_log(255, 255, 255, "|----------------------------------------------
 
 local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION STARTED  ----')
 
-local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Tap to preset", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa"})
+local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Default", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa", "Static"})
 
    
 -- Create new menu items
@@ -585,23 +585,97 @@ end
 
 
 
+local function static_aa()
+	local localplayer = entity.get_local_player()
+	local flags = entity.get_prop(localplayer, "m_fFlags")
+	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
+	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
+	if ui.get(slow_walk) and ui.get(slow_walk2) then
+        --slowwalk
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 1)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 1)
+        ui.set(bodyyaw, "Static")
+        ui.set(bodyyaw2, 180)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "SLOWWALK"
+    elseif flags == 263 and velocity < 250 then
+        --crouch
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 1)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 1)
+        ui.set(bodyyaw, "Static")
+        ui.set(bodyyaw2, 180)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "CROUCH"
+    elseif flags == 256 or flags == 262 or velocity > 250 then
+        --air
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 1)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 1)
+        ui.set(bodyyaw, "Static")
+        ui.set(bodyyaw2, 180)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "AIR"
+    elseif flags == 257 and velocity > 10 and velocity < 250 then
+        --moving
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 1)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 1)
+        ui.set(bodyyaw, "Static")
+        ui.set(bodyyaw2, 180)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)
+        state = "MOVING"
+    else
+        --stand
+        ui.set(pitch, "Default")
+        ui.set(yawbase, "At targets")
+        ui.set(yaw, 1)
+        ui.set(yawbody, "180")
+        ui.set(jyaw, "Center")
+        ui.set(jyawslide, 1)
+        ui.set(bodyyaw, "Static")
+        ui.set(bodyyaw2, 180)
+        ui.set(freestand_byaw, true)
+        ui.set(fyawlimit, 60)        
+        state = "STAND"
+    end
+end
+
+
 --on_run_command
 local function run_command()
-	if ui.get(preset_choice) == "Tap to preset" then
-		ui.set_visible(yawbody, false)
-	    ui.set_visible(yaw, false)
-	    ui.set_visible(bodyyaw, false)
-	    ui.set_visible(bodyyaw2, false)
+	if ui.get(preset_choice) == "Default" then
+		ui.set_visible(yawbody, true)
+	    ui.set_visible(yaw, true)
+	    ui.set_visible(bodyyaw, true)
+	    ui.set_visible(bodyyaw2, true)
 	    ui.set_visible(edge, true)
-	    ui.set_visible(jyaw, false)
-	    ui.set_visible(jyawslide, false)
-	    ui.set_visible(pitch, false)
-	    ui.set_visible(yawbase, false)
+	    ui.set_visible(jyaw, true)
+	    ui.set_visible(jyawslide, true)
+	    ui.set_visible(pitch, true)
+	    ui.set_visible(yawbase, true)
 	    ui.set_visible(freestanding, true)
 	    ui.set_visible(freestanding2, true)
-	    ui.set_visible(fyawlimit, false)
-	    ui.set_visible(freestand_byaw, false)
-        ui.set_visible(Desync, false)
+	    ui.set_visible(fyawlimit, true)
+	    ui.set_visible(freestand_byaw, true)
+        ui.set_visible(Desync, true)
     else
     	ui.set_visible(yawbody, false)
 	    ui.set_visible(yaw, false)
@@ -632,6 +706,8 @@ local function run_command()
     	Clown_aa()
     elseif ui.get(preset_choice) == "White aa" then
     	White_aa()
+    elseif ui.get(preset_choice) == "Static" then
+    	static_aa()
     end
 end
 
