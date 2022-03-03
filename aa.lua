@@ -26,8 +26,20 @@ local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice
 
    
 -- Create new menu items
-local new_menu_items = {
-    menu_indicatores = ui.new_checkbox("AA", "Other","Indicators")
+local visuals = {
+    main_switch = ui.new_checkbox("AA", "Other", "Indicators"),
+    ind_select = ui.new_combobox("AA", "Other", "Select Indicator Style", {"First", "Second"}),
+    ind_label = ui.new_label("AA", "Other", "Active side color"),
+    ind_clr = ui.new_color_picker("AA", "Other", "Indicator Color", 255, 255, 255, 255),
+    rect_label = ui.new_label("AA", "Other", "Rectangle color"),
+    rect_clr = ui.new_color_picker("AA", "Other", "Rectangle color", 255, 255, 255, 255),
+    cross_label = ui.new_label("AA", "Other", "State indicator color"),
+    cross_clr = ui.new_color_picker("AA", "Other", "State indicator color", 255, 255, 255, 255),
+    fade1_label = ui.new_label("AA", "Other", "First Gradient Color"),
+    first_gradient = ui.new_color_picker("AA", "Other", "First Gradient Color", 255, 0, 127, 0),
+    fade2_label = ui.new_label("AA", "Other", "Second Gradient Color"),
+    second_gradient = ui.new_color_picker("AA", "Other", "Second Gradient Color", 255, 0, 127, 255),
+
 }
 
 local ui_element = {
@@ -61,7 +73,6 @@ local fyawlimit = ui.reference("AA", "Anti-aimbot angles", "Fake yaw limit")
 local freestand_byaw = ui.reference("AA", "Anti-aimbot angles", "Freestanding body yaw")
 local slow_walk, slow_walk2 = ui.reference("AA", "Other", "Slow motion")
 local Desync = ui_reference("aa", "anti-aimbot angles", "Roll")
-
 
 -- this is here for debugging or indicators whatever you want idgaf
 local state = "NONE"
@@ -712,61 +723,16 @@ local function run_command()
 end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --indicators
--- Require ( Importing the code from the library and if the user / you don't have the library it will print this error )
-local surface = require("gamesense/surface") or error("Missing the surface library - https://gamesense.pub/forums/viewtopic.php?id=18793") 
 local vector = require("vector")
 local bit = require("bit")
 local bitband = bit.band
 
 -- Menu references
-doubletap_box, doubletap_bind = ui.reference("RAGE","Other","Double tap")
-thirdperson_box,thirdperson_bind = ui.reference("VISUALS","Effects","Force third person (alive)")
-fake_yaw_limit = ui.reference("AA","Anti-aimbot angles","Fake yaw limit")
-forcebaim_bind = ui.reference("RAGE","Other","Force body aim")
-onshotantiaim_box, onshotantiaim_bind = ui.reference("AA", "Other", "On shot anti-aim")
-duck_peek_assist_bind = ui.reference("RAGE","Other","Duck peek assist")
+doubletap = { ui.reference("RAGE","Other","Double tap") }
+fbaim = ui.reference("RAGE","Other","Force body aim")
+onshot_aa = { ui.reference("AA", "Other", "On shot anti-aim") }
+fakeduck = ui.reference("RAGE","Other","Duck peek assist")
 
 
 
@@ -777,82 +743,7 @@ local api_references = {
       
 
 
--- Create surface fonts
-local surface_fonts = {
-    verdana = surface.create_font("Verdana",18,50,0x200),
-    arial = surface.create_font("Arial",12,50,0x200)
-}
-
--- Visuals
-client.set_event_callback("paint", function()   
-
-    if ui.get(new_menu_items.menu_indicatores) then
-
-        --Screen size ( X = width, Y = height )
-        X,Y = client.screen_size()
-
-        -- hitbox position ( X, Y, Z )
-       head_pos_x,head_pos_y,head_pos_z = entity.hitbox_position(api_references.localplayer,0)
-
-       -- Transforming the hitbox position into 2D values ( X, Y )
-       world_to_screen_head_x,world_to_screen_head_y = renderer.world_to_screen(head_pos_x,head_pos_y,head_pos_z)
-
-       -- Spacing for our Indicators
-       spacing = 0
-
-       -- If you are in thirdperson it will display the arrows by your head if you are not in thirdperson it will display by your crosshair 
-       -- PS You can use this arrows for those teamskeet , sigma and other luas indicators. Just make a new if and else 
-       if ui.get(thirdperson_box) and ui.get(thirdperson_bind) then
-         
-          
-        end
-
-
-   
-        -- Indicators
-        -- Lua Name
-       surface.draw_text(X/2,Y/2 + 20,355,255,255,255,surface_fonts.arial,"KRIPSI AA") 
-
-       -- If you have Dobule tap enabled
-        if ui.get(doubletap_bind) then
-          surface.draw_text(X/2,Y/2 + 32,450,150,150,255,surface_fonts.arial,"DT")
-
-          -- Adding spacing
-          spacing = spacing + 10
-        end
-
-        -- If you have Force baim enabled
-        if ui.get(forcebaim_bind) then
-            surface.draw_text(X/2,Y/2 + 32 + spacing,450,150,150,255,surface_fonts.arial,"FB")
-
-             -- Adding spacing
-            spacing = spacing + 10
-        end
-
-        -- If you have HideShots tap enabled
-        if ui.get(onshotantiaim_bind) then
-          surface.draw_text(X/2,Y/2 + 32 + spacing,450,150,150,255,surface_fonts.arial,"HS")
-
-          -- Adding spacing
-          spacing = spacing + 10
-        end 
-          -- If you have FakeDuck tap enabled
-        if ui.get(duck_peek_assist_bind) then
-          surface.draw_text(X/2,Y/2 + 32 + spacing,450,150,150,255,surface_fonts.arial,"FD")
-
-          -- Adding spacing
-          spacing = spacing + 10
-        end
-
-          
-    end
-end)
-
-
-
-
-
---zeuusss
+-- хуйня какая-то
 local vector = require 'vector'
 local csgo_weapons = require 'gamesense/csgo_weapons'
 
@@ -1039,9 +930,6 @@ local function get_nearest()
 end
 ------- enemy closest to crosshair by kibit------
 
-
-
-
 local function lp_hittable()
     if needed_player == nil then return end
 	local local_player = entity.get_local_player()
@@ -1142,13 +1030,160 @@ ui.set_callback(autosmoke, function()
 	end
 end)
 
+function charged(delay)
+    local me = entity.get_local_player()
+    if me == nil or not entity.is_alive(me) then return false end
+    local weapon = entity.get_prop(me, "m_hActiveWeapon")
+    if weapon == nil then return false end
+    local next_attack = entity.get_prop(me, "m_flNextAttack") + delay
+    local next_primary_attack = entity.get_prop(weapon, "m_flNextPrimaryAttack") + delay * 2
+    if next_attack == nil or next_primary_attack == nil then return false end
+    return next_attack - globals.curtime() < 0 and next_primary_attack - globals.curtime() < 0
+end
 
 
+local refs = {
+    dt = { ui_reference("RAGE", "Other", "Double tap") },
+    fd = ui_reference("RAGE", "Other", "Duck peek assist"),
+    baim = ui_reference  ("RAGE", "Other", "Force body aim"),
+    safe = ui_reference("RAGE", "Aimbot", "Force safe point"),
+    hs = { ui_reference("AA", "Other", "On shot anti-aim") },
+}
+
+lerp = function(start, end_pos, time, delta)
+    if (math_abs(start - end_pos) < (delta or 0.01)) then return end_pos end
+    time = globals.frametime() * (time * 175) 
+    if time < 0 then
+      time = 0.01
+    elseif time > 1 then
+      time = 1
+    end
+    return ((end_pos - start) * time + start)
+end
+
+local global_alpha = 0
+local r_lerp, r1_lerp, g_lerp, g1_lerp, b_lerp, b1_lerp, dt_anim, os_anim, baim_anim, sp_anim, fd_anim, rect_anim = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 
+client.set_event_callback("paint_ui", function()
+
+local state_ind = ui.get(visuals.main_switch)
+
+local firststyle = ui.get(visuals.ind_select) == "First"
+local secondstyle = ui.get(visuals.ind_select) == "Second"
+
+ui.set_visible(visuals.fade1_label, state_ind and secondstyle)
+ui.set_visible(visuals.first_gradient, state_ind and secondstyle)
+ui.set_visible(visuals.fade2_label, state_ind and secondstyle)
+ui.set_visible(visuals.second_gradient, state_ind and secondstyle)
+
+ui.set_visible(visuals.ind_select, state_ind)
+ui.set_visible(visuals.ind_label, state_ind and firststyle)
+ui.set_visible(visuals.ind_clr, state_ind and firststyle)
+ui.set_visible(visuals.rect_label, state_ind and firststyle)
+ui.set_visible(visuals.rect_clr, state_ind and firststyle)
+ui.set_visible(visuals.cross_label, state_ind and firststyle)
+ui.set_visible(visuals.cross_clr, state_ind and firststyle)
+
+end)
 
 
+local function indicators()
+    local alpha = math.min(math.floor(math.sin((globals.realtime() % 3) * 4) * 125 + 200), 255)
+    local w, h = client_screen_size()
+    local center = {w / 2, (h / 2) + 20}
+    local cx, cy = w / 2, h / 2
+    local clr = { ui.get(visuals.ind_clr) }
+    local clr2 = { ui.get(visuals.rect_clr) }
+    local clr3 = { ui.get(visuals.cross_clr) }
+    local fade1clr = { ui.get(visuals.first_gradient) }
+    local fade2clr = { ui.get(visuals.second_gradient) }
+    local body_yaw = (math.min(57, (entity.get_prop(entity.get_local_player(), "m_flPoseParameter", 11)*120-60)));
+    local line_width = math.abs(math.floor(body_yaw + 0.5))
+    local offset = 0
 
+
+    dt_anim = lerp(dt_anim , ui_get(refs.dt[2]) and 1 or 0 , 0.045 ,0.05)
+    os_anim = lerp(os_anim , ui_get(refs.hs[2]) and 1 or 0 , 0.045 ,0.05)
+    baim_anim=lerp(baim_anim , ui_get(refs.baim) and 1 or 0 , 0.045 , 0.05)
+    sp_anim = lerp(sp_anim , ui_get(refs.safe) and 1 or 0 , 0.045 ,0.05)
+    fd_anim = lerp(fd_anim , ui_get(refs.fd) and 1 or 0 , 0.045 ,0.05)
+    r_lerp  = lerp(r_lerp , body_yaw > 0 and clr[1] or 255 , 0.1 ,0.05)
+    g_lerp  = lerp(g_lerp , body_yaw > 0 and clr[2] or 255 , 0.1 ,0.05)
+    b_lerp  = lerp(b_lerp , body_yaw > 0 and clr[3] or 255 , 0.1 ,0.05)
+    r1_lerp = lerp(r1_lerp , body_yaw <= 0 and clr[1] or 255 , 0.1 ,0.05)
+    g1_lerp = lerp(g1_lerp , body_yaw <= 0 and clr[2] or 255 , 0.1 ,0.05)
+    b1_lerp = lerp(b1_lerp , body_yaw <= 0 and clr[3] or 255 , 0.1 ,0.05)
+    rect_anim = lerp(rect_anim , (math.abs(body_yaw) / 58), 0.05)
+
+    local should_work = true
+
+    if not ui.get(visuals.main_switch) then should_work = false end
+
+    if should_work then
+        global_alpha = lerp(global_alpha , 1 , 0.045 ,0.05)
+    else
+        global_alpha = lerp(global_alpha , 0 , 0.045 , 0.05)
+    end
+
+    if global_alpha < 0.01  then return end
+
+    local first = "KRIPSI"
+    local second = "AA"
+
+    local ind_size = { renderer_measure_text("cb", "KRIPSI AA") };
+
+
+    if ui.get(visuals.ind_select) == "First" then
+
+    renderer_text(center[1] - (ind_size[1] / 2) + 20, center[2], r_lerp, g_lerp, b_lerp, clr[4] * global_alpha, "cb", 0, first)
+    renderer_text(center[1] + (ind_size[1] / 2) - 6, center[2], r1_lerp, g1_lerp, b1_lerp, clr[4] * global_alpha, "cb", 0, second)
+
+    renderer.rectangle(center[1] - (ind_size[1] / 2) + 1, center[2] + 7, ind_size[1] + 2, 4, 20, 20, 20, clr2[4] * global_alpha);
+    renderer.rectangle(center[1] - (ind_size[1] / 2) + 2, center[2] + 8, ind_size[1], 1, 0, 0, 0, clr2[4] * global_alpha);
+    renderer.rectangle(center[1] - (ind_size[1] / 2) + 2, center[2] + 8, (ind_size[1]) * rect_anim, 2, clr2[1], clr2[2], clr2[3], clr2[4] * global_alpha)
+
+
+    renderer_text(center[1], center[2] + 15 + offset, clr3[1], clr3[2], clr3[3], clr3[4] * global_alpha, "-c", 0, "%  " ..state)
+    offset = offset + 8
+
+    if dt_anim ~= 0 then
+        renderer_text(center[1], center[2] + 15 + offset, ui_get(refs.dt[2]) and (charged(0.15) and clr3[1] or 255) or 255, ui_get(refs.dt[2]) and (charged(0.15) and clr3[2] or 25) or 255, ui_get(refs.dt[2]) and (charged(0.15) and clr3[3] or 25) or 255, (ui_get(refs.dt[2]) and 255 * global_alpha * dt_anim or 100 * global_alpha * dt_anim) , "-c", 0, "DT")
+        offset = offset + math_min(8, dt_anim * 9)
+    end
+
+    if os_anim ~= 0 then
+        renderer_text(center[1], center[2] + 15 + offset, clr3[1], clr3[2], clr3[3], clr3[4] * global_alpha * os_anim, "-c", 0, "OS")
+        offset = offset + math_min(8, os_anim * 9)
+    end
+
+    if baim_anim ~= 0 then
+        renderer_text(center[1], center[2] + 15 + offset, clr3[1], clr3[2], clr3[3], clr3[4] * global_alpha * baim_anim, "-c", 0, "BAIM")
+        offset = offset + math_min(8, baim_anim * 9)
+    end
+
+    if sp_anim ~= 0 then
+        renderer_text(center[1], center[2] + 15 + offset, clr3[1], clr3[2], clr3[3], clr3[4] * global_alpha * sp_anim, "-c", 0, "SAFE")
+        offset = offset + math_min(8, sp_anim * 9)
+    end
+
+    if fd_anim ~= 0 then
+        renderer_text(center[1], center[2] + 15 + offset, clr3[1], clr3[2], clr3[3], alpha * global_alpha * fd_anim, "-c", 0, "DUCK")
+        offset = offset + math_min(8, fd_anim * 9)
+    end
+end
+
+    if ui.get(visuals.ind_select) == "Second" then
+
+        renderer.text(cx, cy + 30, 255, 255, 255, 255 * global_alpha, 'c', 0, string.format('%s°', line_width))
+    
+        renderer.gradient(cx - line_width, cy + 40, line_width, 2, fade1clr[1], fade1clr[2], fade1clr[3], fade1clr[4] * global_alpha, fade2clr[1], fade2clr[2], fade2clr[3], fade2clr[4] * global_alpha, true)
+        renderer.gradient(cx, cy + 40, line_width, 2, fade2clr[1], fade2clr[2], fade2clr[3], fade2clr[4] * global_alpha, fade1clr[1], fade1clr[2], fade1clr[3], fade1clr[4] * global_alpha, true)
+
+        renderer.text(cx, cy + 50, 255, 255, 255, 255 * global_alpha, 'c', 0, 'KRIPSI AA')
+    end
+end
 
 --callbacks
-client.set_event_callback("run_command", run_command)       
+client.set_event_callback("run_command", run_command)     
+client.set_event_callback("paint", indicators)  
