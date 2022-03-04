@@ -610,7 +610,7 @@ local function static_aa()
         ui.set(jyaw, "Center")
         ui.set(jyawslide, 1)
         ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 180)
+        ui.set(bodyyaw2, 5)
         ui.set(freestand_byaw, true)
         ui.set(fyawlimit, 60)
         state = "SLOWWALK"
