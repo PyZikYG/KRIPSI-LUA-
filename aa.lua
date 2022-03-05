@@ -41,7 +41,7 @@ local visuals = {
     second_gradient = ui.new_color_picker("AA", "Other", "Second Gradient Color", 255, 0, 127, 255),
 
 }
-
+local logging_enabled_checkbox = ui.new_checkbox( "AA", "Other","Miss Logs" )
 local ui_element = {
     enable = ui.new_checkbox("AA", "Other", 'Zeus Teleport '),
     hotkey = ui.new_hotkey("AA", "Other", 'Teleport', true),
@@ -1184,8 +1184,53 @@ end
 end
 
 
+---MISS LOGS
+local color_log = client.color_log
+
+-- hitgroup name creds: sapphyrus
+
+local hitgroup_names = {
+    "generic",
+    "head",
+    "chest",
+    "stomach",
+    "left arm",
+    "right arm",
+    "left leg",
+    "right leg",
+    "neck",
+    "?",
+    "gear"
+}
 
 
+
+
+local function on_aim_missed( event )
+    if ui.get( logging_enabled_checkbox ) then
+      output = '[ KRIPSI AA ] missed ' .. entity.get_player_name( event.target ) .. ' | reason: ' .. event.reason .. ' | target hitgroup: '.. hitgroup_names[ event.hitgroup + 1 ] .. ' | hitchance: ' .. event.hit_chance
+  
+      -- so we can tell what it is without reading it
+      if event.reason == 'spread' then
+        color_log( 255, 120, 0, output)
+      elseif event.reason == 'resolver' then
+        color_log( 255, 0, 0, output)
+      else
+        color_log( 255, 255, 255, output)
+      end
+    end
+end
+
+client.set_event_callback( "aim_miss", on_aim_missed )
+
+local function on_aim_hit( event )
+  if ui.get( logging_enabled_checkbox ) then
+    output = '[ KRIPSI AA ] hit ' .. entity.get_player_name( event.target ) .. ' for ' .. event.damage .. ' | ' .. entity.get_prop( event.target, 'm_iHealth' ) .. ' health left' .. ' | hitgroup: ' .. hitgroup_names[ event.hitgroup + 1 ] .. ' | hitchance: ' .. event.hit_chance
+    color_log( 0, 255, 0, output )
+  end
+end
+
+client.set_event_callback( "aim_hit", on_aim_hit )
 
 
 
