@@ -55,7 +55,8 @@ local ui_element = {
 
 local autosmoke = ui.new_checkbox("AA", "Other", "Auto-Smoke")
 local hk_autosmoke = ui.new_hotkey("AA", "Other", "Auto-Smoke key", true)
-   
+local bChat = ui.new_checkbox("AA", "Other", "Miss-logs in chat")
+local bConsole = ui.new_checkbox("AA", "Other", "Miss-logs in console") 
 
 local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION ENDED  ----')
 
@@ -1190,9 +1191,7 @@ end
 -----miss logs
 
 --===================== FFI BULLSHIT ETC =====================--
-local bChat = ui.new_checkbox("AA", "Other", "Miss-logs in chat")
-local bConsole = ui.new_checkbox("AA", "Other", "Miss-logs in console") 
-local ffi = require("ffi")
+
 ffi.cdef[[
 typedef void***(__thiscall* FindHudElement_t)(void*, const char*);
 typedef void(__cdecl* ChatPrintf_t)(void*, int, int, const char*, ...);
