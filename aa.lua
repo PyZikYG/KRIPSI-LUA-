@@ -1,4 +1,53 @@
--- local variables for API functions. any changes to the line below will be lost on re-generation
+local client_userid_to_entindex, entity_get_local_player, ui_get, ui_reference, client_draw_indicator, client_set_event_callback, ui_set, globals_curtime, client_delay_call, math_random, ui_new_checkbox, ui_new_slider, ui_set_callback = client.userid_to_entindex, entity.get_local_player, ui.get, ui.reference, client.draw_indicator, client.set_event_callback, ui.set, globals.curtime, client.delay_call, math.random, ui.new_checkbox, ui.new_slider, ui.set_callback
+local a_b = ui_new_checkbox("AA", "Anti-aimbot angles", "KRIPSI AA")
+local visuals = {
+    
+    ind_select = ui.new_combobox("AA", "Anti-aimbot angles", "Select Indicator Style", {"First", "Second"}),
+    ind_label = ui.new_label("AA", "Anti-aimbot angles", "Active side color"),
+    ind_clr = ui.new_color_picker("AA", "Anti-aimbot angles", "Indicator Color", 255, 255, 255, 255),
+    rect_label = ui.new_label("AA", "Anti-aimbot angles", "Rectangle color"),
+    rect_clr = ui.new_color_picker("AA", "Anti-aimbot angles", "Rectangle color", 255, 255, 255, 255),
+    cross_label = ui.new_label("AA", "Anti-aimbot angles", "State indicator color"),
+    cross_clr = ui.new_color_picker("AA", "Anti-aimbot angles", "State indicator color", 255, 255, 255, 255),
+    fade1_label = ui.new_label("AA", "Anti-aimbot angles", "First Gradient Color"),
+    first_gradient = ui.new_color_picker("AA", "Anti-aimbot angles", "First Gradient Color", 255, 0, 127, 0),
+    fade2_label = ui.new_label("AA", "Anti-aimbot angles", "Second Gradient Color"),
+    second_gradient = ui.new_color_picker("AA", "Anti-aimbot angles", "Second Gradient Color", 255, 0, 127, 255),
+
+}
+local KRIPSI_ROLL = ui_new_checkbox("AA", "Anti-aimbot angles", "KRIPSI ROLL")
+local sexy = ui.new_multiselect("AA","Anti-aimbot angles","Roll State On:","In Air","On Ladders","Low Stamina","On Key","< Speed Velocity")
+local body_yaw, body_yaw_s = ui_reference("AA", "Anti-aimbot angles", "Body Yaw")
+local yaw, yaw_s = ui_reference("AA", "Anti-aimbot angles", "Yaw")
+local pitch = ui_reference("AA", "Anti-aimbot angles", "Pitch")
+local fakeyawlimit = ui_reference("aa", "anti-aimbot angles", "Fake yaw limit")
+local yawbody, yaw = ui.reference("AA", "Anti-aimbot angles", "Yaw")
+local bodyyaw, bodyyaw2 = ui.reference("AA", "Anti-aimbot angles", "Body yaw")
+local freeyaw = ui.reference("AA", "Anti-aimbot angles", "Freestanding body yaw")
+local edge = ui.reference("AA", "Anti-aimbot angles", "Edge yaw")
+local jyaw, jyawslide = ui.reference("AA", "Anti-aimbot angles", "Yaw jitter")
+local pitch = ui.reference("AA", "Anti-aimbot angles", "Pitch")
+local yawbase = ui.reference("AA", "Anti-aimbot angles", "Yaw base")
+local freestanding, freestanding2 = ui.reference("AA", "Anti-aimbot angles", "Freestanding")
+local fyawlimit = ui.reference("AA", "Anti-aimbot angles", "Fake yaw limit")
+local freestand_byaw = ui.reference("AA", "Anti-aimbot angles", "Freestanding body yaw")
+local slow_walk, slow_walk2 = ui.reference("AA", "Other", "Slow motion")
+local key3 = ui.new_hotkey("AA", "Anti-aimbot angles", "Force Rolling Angle on Key (Speed Decrease)")
+local checkbox_hitchecker = ui.new_checkbox("AA", "Anti-aimbot angles", "Disable Roll when impacted", true)
+local velocity_slider = ui.new_slider("AA", "Anti-aimbot angles", "Roll Velocity Trigger", 40, 250, 120, true, " ")
+local stamina_slider = ui.new_slider("AA", "Anti-aimbot angles", "Stamina Recovery", 0, 80, 70, true, " ")
+local in_air_roll = ui.new_slider("AA","Anti-aimbot angles","Customized Roll in air",  -50, 50, 50, true, " ")
+local slider_roll = ui.new_slider("AA", "Anti-aimbot angles", "Roll", -50, 50, 50, true, "°")
+
+local ab_p = 1 --antibrute_phase
+local ab_p_r = 1
+local lastsent_p = globals.tickcount()
+
+
+
+
+
+
 local bit_band, client_camera_angles, client_color_log, client_create_interface, client_delay_call, client_exec, client_eye_position, client_key_state, client_log, client_random_int, client_scale_damage, client_screen_size, client_set_event_callback, client_trace_bullet, client_userid_to_entindex, database_read, database_write, entity_get_player_weapon, entity_get_players, entity_get_prop, entity_hitbox_position, entity_is_alive, entity_is_enemy, math_abs, math_atan2, require, error, globals_absoluteframetime, globals_curtime, globals_realtime, math_atan, math_cos, math_deg, math_floor, math_max, math_min, math_rad, math_sin, math_sqrt, print, renderer_circle_outline, renderer_gradient, renderer_measure_text, renderer_rectangle, renderer_text, renderer_triangle, string_find, string_gmatch, string_gsub, string_lower, table_insert, table_remove, ui_get, ui_new_checkbox, ui_new_color_picker, ui_new_hotkey, ui_new_multiselect, ui_reference, tostring, ui_is_menu_open, ui_mouse_position, ui_new_combobox, ui_new_slider, ui_set, ui_set_callback, ui_set_visible, tonumber, pcall = bit.band, client.camera_angles, client.color_log, client.create_interface, client.delay_call, client.exec, client.eye_position, client.key_state, client.log, client.random_int, client.scale_damage, client.screen_size, client.set_event_callback, client.trace_bullet, client.userid_to_entindex, database.read, database.write, entity.get_player_weapon, entity.get_players, entity.get_prop, entity.hitbox_position, entity.is_alive, entity.is_enemy, math.abs, math.atan2, require, error, globals.absoluteframetime, globals.curtime, globals.realtime, math.atan, math.cos, math.deg, math.floor, math.max, math.min, math.rad, math.sin, math.sqrt, print, renderer.circle_outline, renderer.gradient, renderer.measure_text, renderer.rectangle, renderer.text, renderer.triangle, string.find, string.gmatch, string.gsub, string.lower, table.insert, table.remove, ui.get, ui.new_checkbox, ui.new_color_picker, ui.new_hotkey, ui.new_multiselect, ui.reference, tostring, ui.is_menu_open, ui.mouse_position, ui.new_combobox, ui.new_slider, ui.set, ui.set_callback, ui.set_visible, tonumber, pcall
 local ui_menu_position, ui_menu_size, math_pi, renderer_indicator, entity_is_dormant, client_set_clan_tag, client_trace_line, entity_get_all, entity_get_classname = ui.menu_position, ui.menu_size, math.pi, renderer.indicator, entity.is_dormant, client.set_clan_tag, client.trace_line, entity.get_all, entity.get_classname
 local local_player = entity.get_local_player()
@@ -14,1020 +63,465 @@ local persona_api = js.MyPersonaAPI
 local name = persona_api.GetName()
 
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
-client.color_log(21, 235, 220,  "                       Welcome " .. name .. "!            ")
-client.color_log(215, 115, 222, "                      Coded by KRIPSI#5061                 ")
-client.color_log(235, 221, 21,  "                    Last Updated: 08/03/2022.               ")
+client.color_log(21, 235, 220,  "                         KRIPSI AA (V2) INJECTED       ")
+client.color_log(215, 115, 222, "              (︶︹︺) Coded by KRIPSI#5061 (︶︹︺)               ")
+client.color_log(235, 221, 21,  "                    Last Updated: 06/05/2022.               ")
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
--- our menu elements :D
-
-local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION STARTED  ----')
-
-local preset_choice = ui.new_combobox("AA", "Anti-aimbot angles", "Preset choice", {"Default", "Sigma Prediction", "Acatel.us", "Tank aa", "DrainYaw", "White aa", "Clown aa", "Static"})
-
-   
--- Create new menu items
-local visuals = {
-    main_switch = ui.new_checkbox("AA", "Other", "Indicators"),
-    ind_select = ui.new_combobox("AA", "Other", "Select Indicator Style", {"First", "Second"}),
-    ind_label = ui.new_label("AA", "Other", "Active side color"),
-    ind_clr = ui.new_color_picker("AA", "Other", "Indicator Color", 255, 255, 255, 255),
-    rect_label = ui.new_label("AA", "Other", "Rectangle color"),
-    rect_clr = ui.new_color_picker("AA", "Other", "Rectangle color", 255, 255, 255, 255),
-    cross_label = ui.new_label("AA", "Other", "State indicator color"),
-    cross_clr = ui.new_color_picker("AA", "Other", "State indicator color", 255, 255, 255, 255),
-    fade1_label = ui.new_label("AA", "Other", "First Gradient Color"),
-    first_gradient = ui.new_color_picker("AA", "Other", "First Gradient Color", 255, 0, 127, 0),
-    fade2_label = ui.new_label("AA", "Other", "Second Gradient Color"),
-    second_gradient = ui.new_color_picker("AA", "Other", "Second Gradient Color", 255, 0, 127, 255),
-
-}
-local logging_enabled_checkbox = ui.new_checkbox( "AA", "Other","Miss Logs" )
-local ui_element = {
-    enable = ui.new_checkbox("AA", "Other", 'Zeus Teleport '),
-    hotkey = ui.new_hotkey("AA", "Other", 'Teleport', true),
-    combo = ui.new_combobox("AA", "Other", '\n Options', {'Distance', 'Predicted distance', 'Teleport out (test)'}),
-    weapons = ui.new_multiselect("AA", "Other", '\n Weapons', {'Pistol', 'SMG', 'Rifle', 'Shotgun', 'Machine gun', 'Sniper rifle', 'Taser'}),
-    dist = ui.new_slider("AA", "Other", 'Min. Dist to teleport', 100, 300, 200, true, 'u', 1, { }),
-    pred_dist = ui.new_slider("AA", "Other", 'Min. Pred dist to teleport', 100, 300, 240, true, 'u', 1, { }),
-    pred_ticks = ui.new_slider("AA", "Other", 'Predicted Ticks', 60, 100, 75, true, 't', 1, {}),
-    out_ticks = ui.new_slider("AA", "Other", 'Predicted location ticks', 0, 400, 200, true, 't', 1, {}),
-}
-
-local autosmoke = ui.new_checkbox("AA", "Other", "Auto-Smoke")
-local hk_autosmoke = ui.new_hotkey("AA", "Other", "Auto-Smoke key", true)
-
-local label = ui.new_label("AA", "Other",'---- KRIPSI MISC LUA SECTION ENDED  ----')
-
-
--- all aa refs
-local yawbody, yaw = ui.reference("AA", "Anti-aimbot angles", "Yaw")
-local bodyyaw, bodyyaw2 = ui.reference("AA", "Anti-aimbot angles", "Body yaw")
-local freeyaw = ui.reference("AA", "Anti-aimbot angles", "Freestanding body yaw")
-local edge = ui.reference("AA", "Anti-aimbot angles", "Edge yaw")
-local jyaw, jyawslide = ui.reference("AA", "Anti-aimbot angles", "Yaw jitter")
-local pitch = ui.reference("AA", "Anti-aimbot angles", "Pitch")
-local yawbase = ui.reference("AA", "Anti-aimbot angles", "Yaw base")
-local freestanding, freestanding2 = ui.reference("AA", "Anti-aimbot angles", "Freestanding")
-local fyawlimit = ui.reference("AA", "Anti-aimbot angles", "Fake yaw limit")
-local freestand_byaw = ui.reference("AA", "Anti-aimbot angles", "Freestanding body yaw")
-local slow_walk, slow_walk2 = ui.reference("AA", "Other", "Slow motion")
-local Desync = ui_reference("aa", "anti-aimbot angles", "Roll")
-
--- this is here for debugging or indicators whatever you want idgaf
-local state = "NONE"
 
 
 
 
-local function sigma_prediction_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Offset")
-        ui.set(jyawslide, math.random(0,60))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, 7)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, -95)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 35)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 60)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, 7)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, -95)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
+
+
+
+
+
+
+
+
+
+
+local function run_command()
+	
+        
+        
+        
+    if ui.get(KRIPSI_ROLL) then
+            ui.set_visible(yawbody, false)
+            ui.set_visible(yaw, false)
+            ui.set_visible(bodyyaw, false)
+            ui.set_visible(bodyyaw2, false)
+            ui.set_visible(edge, false)
+            ui.set_visible(jyaw, false)
+            ui.set_visible(jyawslide, false)
+            ui.set_visible(pitch, false)
+            ui.set_visible(yawbase, false)
+            ui.set_visible(freestanding, false)
+            ui.set_visible(freestanding2, false)
+            ui.set_visible(fyawlimit, false)
+            ui.set_visible(freestand_byaw, false)
+            ui.set_visible(a_b, true) 
+            ui.set_visible(sexy, true) 
+           
+    end  
+
+    if not ui.get(KRIPSI_ROLL) then 
+        ui.set_visible(yawbody, false)
+        ui.set_visible(yaw, false)
+        ui.set_visible(bodyyaw, false)
+        ui.set_visible(bodyyaw2, false)
+        ui.set_visible(edge, false)
+        ui.set_visible(jyaw, false)
+        ui.set_visible(jyawslide, false)
+        ui.set_visible(pitch, false)
+        ui.set_visible(yawbase, false)
+        ui.set_visible(freestanding, false)
+        ui.set_visible(freestanding2, false)
+        ui.set_visible(fyawlimit, false)
+        ui.set_visible(freestand_byaw, false)
+        ui.set_visible(a_b, true) 
+        ui.set_visible(sexy, false) 
+        ui.set_visible(key3, false) 
+        ui.set_visible(checkbox_hitchecker, false) 
+        ui.set_visible(in_air_roll, false) 
+        ui.set_visible(velocity_slider, false) 
+        ui.set_visible(stamina_slider, false) 
+        ui.set_visible(slider_roll, false)
+end
+        
+    
 end
 
--- acatel.us !!!
-local function acatel_us_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 5)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 0)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, -79)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, math.random(30,45))
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, math.random(5,-10))
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 0)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, -79)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, math.random(30,45))
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 79)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
+
+
+
+
+
+
+
+
+
+--aa
+local function on_player_hurt(e)
+	
+	local userid, attacker, health, armor, weapon, dmg_health, dmg_armor, hitgroup = e.userid, e.attacker, e.health, e.armor, e.weapon, e.dmg_health, e.dmg_armor, e.hitgroup
+	if client_userid_to_entindex(userid) == entity_get_local_player() and hitgroup ~= 0 then
+		if (ui_get(a_b)) then
+			ab_p = ab_p + 1
+			ab_p_r = ab_p_r + 1
+			if ab_p > 4 then
+				ab_p = 1
+			end
+			if ab_p == 1 or ab_p == 3 then
+				ui.set(bodyyaw, "Jitter")
+				local old = ui_get(yaw_s)
+				ui.set(pitch, "Default")
+				ui.set(yawbase, "At targets")
+				ui.set(yaw, -10)
+				ui.set(yawbody, "180")
+				ui.set(jyaw, "Center")
+				ui.set(jyawslide, 58)
+				ui.set(bodyyaw2, 0)
+				ui.set(freestand_byaw, false)
+				ui.set(fyawlimit, 60)
+			elseif ab_p == 2 then
+				ui.set(pitch, "Default")
+                ui.set(yawbase, "At targets")
+                ui.set(yaw, 5)
+                ui.set(yawbody, "180")
+                ui.set(jyaw, "Center")
+                ui.set(jyawslide, 0)
+                ui.set(bodyyaw, "Jitter")
+                ui.set(bodyyaw2, -79)
+                ui.set(freestand_byaw, false)
+                ui.set(fyawlimit, math.random(30,45))
+			elseif ab_p == 4 then
+		        ui.set(pitch, "Default")
+                ui.set(yawbase, "At targets")
+                ui.set(yaw, 0)
+                ui.set(yawbody, "180")
+                ui.set(jyaw, "Center")
+                ui.set(jyawslide, 25)
+                ui.set(bodyyaw, "Jitter")
+                ui.set(bodyyaw2, 0)
+                ui.set(freestand_byaw, true)
+                ui.set(fyawlimit, 60)
+			end
+		end
+		
+	end
+
 end
 
-local function sigma_prediction_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Offset")
-        ui.set(jyawslide, math.random(0,60))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, 7)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, -95)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 35)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 60)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, 7)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, -95)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
+local function on_paint(ctx)
+	if (ui_get(a_b)) then
+		client.draw_indicator(c, 124, 252, 252, 252, "KRIPSI AA") 
+	end
+	
 end
--- tank aa !!!
-local function Tank_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
+
+local function prestart()
+	if (ui_get(a_b)) then
+		ui_set(body_yaw, "Jitter")
+		ab_p = 1
+		ab_p_r = 1
+		ui.set(pitch, "Default")
         ui.set(yawbase, "At targets")
         ui.set(yaw, 3)
         ui.set(yawbody, "180")
         ui.set(jyaw, "Center")
         ui.set(jyawslide, 60)
-        ui.set(bodyyaw, "Jitter")
+		ui.set(bodyyaw, "Jitter")
         ui.set(bodyyaw2, 0)
         ui.set(freestand_byaw, false)
         ui.set(fyawlimit, 58)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 3)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 42)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 23)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, math.random(8,12))
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 79)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
-end
-
--- DrainYaw !!!
-local function DrainYaw()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, -10)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 58)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 60)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, -10)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Offset")
-        ui.set(jyawslide, -10)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, -141)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")  
-        ui.set(jyawslide, 58)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 141)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 1)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 60)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, false)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
-end
-
-local function Clown_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 180)
-        ui.set(yawbody, "Spin")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, math.random(160,180))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 180)
-        ui.set(yawbody, "Spin")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, math.random(160,180))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 180)
-        ui.set(yawbody, "Spin")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, math.random(160,180))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 180)
-        ui.set(yawbody, "Spin")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, math.random(160,180))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 180)
-        ui.set(yawbody, "Spin")
-        ui.set(jyaw, "Random")
-        ui.set(jyawslide, math.random(160,180))
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
-end
-
---White aa
-local function White_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 0)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 25)
-        ui.set(bodyyaw, "Jitter")
-        ui.set(bodyyaw2, 0)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "STAND"
-    end
+	end
+	
 end
 
 
 
-local function static_aa()
-	local localplayer = entity.get_local_player()
-	local flags = entity.get_prop(localplayer, "m_fFlags")
-	local vx, vy = entity.get_prop(localplayer, "m_vecVelocity")
-	local velocity = math.floor(math.min(10000, math.sqrt(vx*vx + vy*vy) + 0.5))
-	if ui.get(slow_walk) and ui.get(slow_walk2) then
-        --slowwalk
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 1)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 3)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 3)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "SLOWWALK"
-    elseif flags == 263 and velocity < 250 then
-        --crouch
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 1)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 1)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "CROUCH"
-    elseif flags == 256 or flags == 262 or velocity > 250 then
-        --air
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 1)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 1)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "AIR"
-    elseif flags == 257 and velocity > 10 and velocity < 250 then
-        --moving
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 1)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 1)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)
-        state = "MOVING"
-    else
-        --stand
-        ui.set(pitch, "Default")
-        ui.set(yawbase, "At targets")
-        ui.set(yaw, 1)
-        ui.set(yawbody, "180")
-        ui.set(jyaw, "Center")
-        ui.set(jyawslide, 1)
-        ui.set(bodyyaw, "Static")
-        ui.set(bodyyaw2, 180)
-        ui.set(freestand_byaw, true)
-        ui.set(fyawlimit, 60)        
-        state = "STAND"
-    end
-end
 
 
---on_run_command
-local function run_command()
-	if ui.get(preset_choice) == "Default" then
-		ui.set_visible(yawbody, false)
-	    ui.set_visible(yaw, false)
-	    ui.set_visible(bodyyaw, false)
-	    ui.set_visible(bodyyaw2, false)
-	    ui.set_visible(edge, true)
-	    ui.set_visible(jyaw, false)
-	    ui.set_visible(jyawslide, false)
-	    ui.set_visible(pitch, false)
-	    ui.set_visible(yawbase, false)
-	    ui.set_visible(freestanding, true)
-	    ui.set_visible(freestanding2, true)
-	    ui.set_visible(fyawlimit, false)
-	    ui.set_visible(freestand_byaw, false)
-        ui.set_visible(Desync, false)
-    else
-    	ui.set_visible(yawbody, false)
-	    ui.set_visible(yaw, false)
-	    ui.set_visible(bodyyaw, false)
-	    ui.set_visible(bodyyaw2, false)
-	    ui.set_visible(edge, true)
-	    ui.set_visible(jyaw, false)
-	    ui.set_visible(jyawslide, false)
-	    ui.set_visible(pitch, false)
-	    ui.set_visible(yawbase, false)
-	    ui.set_visible(freestanding, true)
-	    ui.set_visible(freestanding2, true)
-	    ui.set_visible(fyawlimit, false)
-	    ui.set_visible(freestand_byaw, false)
-        ui.set_visible(Desync, false)
-        
-    end
-    
-    if ui.get(preset_choice) == "Acatel.us" then
-    	acatel_us_aa()
-    elseif ui.get(preset_choice) == "Sigma Prediction" then
-    	sigma_prediction_aa()
-    elseif ui.get(preset_choice) == "Tank aa" then
-    	Tank_aa()
-    elseif ui.get(preset_choice) == "DrainYaw" then
-    	DrainYaw()
-    elseif ui.get(preset_choice) == "Clown aa" then
-    	Clown_aa()
-    elseif ui.get(preset_choice) == "White aa" then
-    	White_aa()
-    elseif ui.get(preset_choice) == "Static" then
-    	static_aa()
-    end
-end
+----roll aa
 
+local bit_band = bit.band
+local entity_get_local_player, entity_is_alive, entity_get_prop, entity_get_player_weapon =
+    entity.get_local_player,
+    entity.is_alive,
+    entity.get_prop,
+    entity.get_player_weapon
 
---indicators
+-- Libraries
+local ffi = require "ffi"
 local vector = require("vector")
-local bit = require("bit")
-local bitband = bit.band
+local ui_set = ui.set
+local globals_tickcount, globals_realtime = globals.tickcount, globals.realtime
+local entity_get_local_player, entity_is_alive, entity_get_prop, entity_get_player_weapon =
+    entity.get_local_player,
+    entity.is_alive,
+    entity.get_prop,
+    entity.get_player_weapon
+local math_cos, math_sin, math_rad, math_sqrt = math.cos, math.sin, math.rad, math.sqrt
+local function contains(tbl, val)
+    for i = 1, #tbl do
+        if tbl[i] == val then
+            return true
+        end
+    end
+    return false
+end
+ui_reference = ui.reference
+local angle_t = ffi.typeof("struct { float pitch; float yaw; float roll; }")
+local vector3_t = ffi.typeof("struct { float x; float y; float z; }")
 
--- Menu references
-doubletap = { ui.reference("RAGE","Other","Double tap") }
-fbaim = ui.reference("RAGE","Other","Force body aim")
-onshot_aa = { ui.reference("AA", "Other", "On shot anti-aim") }
-fakeduck = ui.reference("RAGE","Other","Duck peek assist")
+local usercmd_t =
+    ffi.typeof(
+    [[
+    struct
+    {
+        uintptr_t vfptr;
+        int command_number;
+        int tick_count;
+        $ viewangles;
+        $ aimdirection;
+        float forwardmove;
+        float sidemove;
+        float upmove;
+        int buttons;
+        uint8_t impulse;
+        int weaponselect;
+        int weaponsubtype;
+        int random_seed;
+        short mousedx;
+        short mousedy;
+        bool hasbeenpredicted;
+        $ headangles;
+        $ headoffset;
+    }
+    ]],
+    angle_t,
+    vector3_t,
+    angle_t,
+    vector3_t
+)
 
+local get_user_cmd_t = ffi.typeof("$* (__thiscall*)(uintptr_t ecx, int nSlot, int sequence_number)", usercmd_t)
 
+local input_vtbl_t =
+    ffi.typeof(
+    [[
+    struct
+    {
+        uintptr_t padding[8];
+        $ GetUserCmd;
+    }
+    ]],
+    get_user_cmd_t
+)
 
--- API References ( 1 per line, you can not do X, Y = client.screen_size() at least from my experience ) 
-local api_references = {
-    localplayer = entity.get_local_player()
+local input_t = ffi.typeof([[
+    struct
+    {
+        $* vfptr;
+    }*
+    ]], input_vtbl_t)
+
+-- ugly casting LMAO
+local g_pInput =
+    ffi.cast(
+    input_t,
+    ffi.cast(
+        "uintptr_t**",
+        tonumber(
+            ffi.cast(
+                "uintptr_t",
+                client.find_signature("client.dll", "\xB9\xCC\xCC\xCC\xCC\x8B\x40\x38\xFF\xD0\x84\xC0\x0F\x85") or
+                    error("client.dll!:input not found.")
+            )
+        ) + 1
+    )[0]
+)
+
+local lua_log = function(...) --inspired by sapphyrus' multicolorlog
+    client.color_log(255, 59, 59, "[ KRIPSI AA ]\0")
+    local arg_index = 1
+    while select(arg_index, ...) ~= nil do
+        client.color_log(217, 217, 217, " ", select(arg_index, ...), "\0")
+        arg_index = arg_index + 1
+    end
+    client.color_log(217, 217, 217, " ") -- this is needed to end the line
+end
+
+lua_log("Set Velocity Triggers to 80 if you are using Auto/AWP")
+
+local references = {
+    fake_yaw_limit = ui.reference("AA", "Anti-aimbot angles", "Fake yaw limit"),
+    aa_enabled = ui.reference("AA", "Anti-aimbot angles", "Enabled"),
+    pitch = ui.reference("AA", "Anti-aimbot angles", "Pitch"),
+    yaw = {ui.reference("AA", "Anti-aimbot angles", "Yaw")},
+    body_yaw = {ui.reference("AA", "Anti-aimbot angles", "Body yaw")},
+    yaw_base = ui.reference("AA", "Anti-aimbot angles", "Yaw base"),
+    jitter = {ui.reference("AA", "Anti-aimbot angles", "Yaw jitter")},
+    fake_limit = ui.reference("AA", "Anti-aimbot angles", "Fake yaw limit"),
+    roll = {ui.reference("AA", "Anti-aimbot angles" , "Roll")},
 }
-      
 
-
--- хуйня какая-то
-local vector = require 'vector'
-local csgo_weapons = require 'gamesense/csgo_weapons'
-
-local ticks_to_time = function(ticks)
-    return globals.tickinterval() * ticks
+local function setup()
+    ui.set(references.yaw[1], "180")
+    ui.set(references.body_yaw[2], 137)
+    ui.set(references.yaw_base, "At targets")
+    ui.set(references.body_yaw[1], "Static")
+    ui.set(references.pitch, "Minimal")
+    ui.set(references.jitter[2], 0)
+    ui.set(references.fake_limit, 60)
+end
+setup()
+local function on_setup_command(cmd)
+    g_pOldAngles = vector(cmd.pitch, cmd.yaw, cmd.roll)
 end
 
-local function is_visible(ent) -- creds to invalidcode <3
-    local me = entity.get_local_player()
-    local l_x, l_y, l_z = entity.hitbox_position(me, 0)
-    local e_x, e_y, e_z = entity.hitbox_position(ent, 0)
 
-    local frac, ent = client.trace_line(me, l_x, l_y, l_z, e_x, e_y, e_z)
 
-    return frac > 0.6
+
+
+
+local function velocity()
+    local me = entity_get_local_player()
+    local velocity_x, velocity_y = entity_get_prop(me, "m_vecVelocity")
+    return math.sqrt(velocity_x ^ 2 + velocity_y ^ 2)
+end
+ui.set_visible(key3, false)
+ui.set_visible(velocity_slider, false)
+ui.set_visible(stamina_slider, false)
+ui.set_visible(checkbox_hitchecker, false)
+ui.set_visible(in_air_roll, false)
+ui.set_visible(references.roll[1], false)
+
+local function stamina()
+    return (80 - entity_get_prop(entity_get_local_player(), "m_flStamina"))
 end
 
-local function get_ent_dist(ent_1, ent_2) -- creds to invalidcode <3
-    local ent1_pos = vector(entity.get_prop(ent_1, 'm_vecOrigin'))
-    local ent2_pos = vector(entity.get_prop(ent_2, 'm_vecOrigin'))
-
-    local dist = ent1_pos:dist(ent2_pos)
-
-    return dist
+ui.set_visible(checkbox_hitchecker, false)
+local function on_hit()
+    return (entity.get_prop(entity.get_local_player(), "m_flVelocityModifier"))
 end
 
-local function contains(table, key) 
-    for index, value in pairs(table) do 
-        if value == key then 
-            return true 
-        end 
-    end 
-    return false 
+local function hit_bind()
+    local hit_health = on_hit()
+    if contains(ui.get(sexy), "< Speed Velocity") then
+        ui.set_visible(velocity_slider, true)
+        ui.set_visible(checkbox_hitchecker, true)
+        if ui.get(checkbox_hitchecker) and hit_health <= 0.9 then
+            return 0
+        else if is_on_ladder == 1 then
+            return  0
+        else
+            return ui.get(velocity_slider)
+            end
+        end
+    end
+    ui.set_visible(velocity_slider, false)
+    ui.set_visible(checkbox_hitchecker, false)
+    return 0
 end
 
-local function SetTableVisibility(table, state)
-    for i = 1, #table do
-        ui.set_visible(table[i], state)
+local function Ladder_status()
+    local ladd_stat = 0
+    if contains(ui.get(sexy), "On Ladders") then
+        if is_on_ladder == 1 then
+            ladd_stat = 1
+        else
+            ladd_stat = 0
+        end
+    end
+    return ladd_stat
+end
+
+
+local function stamina_bind()
+    if contains(ui.get(sexy), "Low Stamina") then
+        ui.set_visible(stamina_slider, true)
+        return ui.get(stamina_slider)
+    else
+        ui.set_visible(stamina_slider, false)
+        return 0
     end
 end
+local function inair()
+    return (bit_band(entity_get_prop(entity_get_local_player(), "m_fFlags"), 1) == 0)
+end
 
-local dt = {ui.reference('Rage', 'Other', 'Double tap')}
+local function air_status()
+    local air_stat = 0
+    if contains(ui.get(sexy), "In Air") then
+        if inair() then
+            air_stat = 1
+        else
+            air_stat = 0
+        end
+    end
+    return air_stat
+end
+local function roll_bind()
+    local roll_set = ui.get(slider_roll)
+    if contains(ui.get(sexy), "In Air") then
+        ui.set_visible(in_air_roll, true)
+    else
+        ui.set_visible(in_air_roll, false)
+    end
+    if air_status() == 1 then
+        roll_set = ui.get(in_air_roll)
+    else
+        return ui.get(slider_roll)
+    end
+        return roll_set
+end
 
 
-
-local weapon_groups = {
-    ['pistol'] = 'Pistol',
-    ['smg'] = 'SMG',
-    ['rifle'] = 'Rifle',
-    ['shotgun'] = 'Shotgun',
-    ['machinegun'] = 'Machine gun',
-    ['sniperrifle'] = 'Sniper rifle',
-    ['taser'] = 'Taser'
-}
-
-local cached_state = ui.get(dt[1])
-local cache, cache_2, cache_3 = false, false, false
-
-local function on_setup()
-    if not ui.get(ui_element.hotkey) or not ui.get(ui_element.enable) then
+local function hide_keys()
+    local key100 = 1
+    if contains(ui.get(sexy), "On Key") then
+        ui.set_visible(key3, true)
+    else
+        ui.set_visible(key3, false)
+        return key100
+    end
+end
+client.set_event_callback(
+    "setup_command",
+    function(e)
+        local local_player = entity.get_local_player()
+        if entity.get_prop(local_player, "m_MoveType") == 9 then
+            is_on_ladder = 1
+        else
+            is_on_ladder = 0
+        end
+    end
+)
+local is_rolling = false
+local function on_run_command(cmd)
+    hide_keys()
+    local speed = velocity()
+    local recovery = stamina()
+    if air_status() == 0 and not ui.get(key3) and speed >= hit_bind() and recovery >= stamina_bind() and Ladder_status() == 0 then
+        is_rolling = false
         return
     end
+    is_rolling = true
+    stamina_bind()
+    hit_bind()
+    local pUserCmd = g_pInput.vfptr.GetUserCmd(ffi.cast("uintptr_t", g_pInput), 0, cmd.command_number)
 
-    local local_player = entity.get_local_player()
-    local enemies = entity.get_players(true)
-    local weapon_ent = entity.get_player_weapon(local_player)
-	local weapon = csgo_weapons(weapon_ent)
-    if weapon == nil then return end
-	if weapon_ent == nil then return end
-    local ticktime = ticks_to_time(ui.get(ui_element.pred_ticks))
+    pUserCmd.viewangles.roll = roll_bind()
 
-    ui.set(dt[1], true)
-
-    for i, v in ipairs(enemies) do
-        local lvel = vector(entity.get_prop(local_player, 'm_vecVelocity'))
-        local dist = get_ent_dist(local_player, v)
-        local p_dist = get_ent_dist(local_player * ticktime, v * ticktime)
-        local origin = vector(entity.get_origin(v * ticktime))
-        local eye_pos = vector(client.eye_position()) + (lvel * ticktime)
-        local trace_line = client.trace_line(local_player, eye_pos.x, eye_pos.y, eye_pos.z, origin.x, origin.y, origin.z)
-
-        if contains(ui.get(ui_element.weapons), weapon_groups[weapon.type]) then
-            if (dist < ui.get(ui_element.dist)) and ui.get(ui_element.combo) == 'Distance' and is_visible(v) then
-                ui.set(dt[1], false)
-            end
-    
-            if (p_dist < ui.get(ui_element.pred_dist)) and ui.get(ui_element.combo) == 'Predicted distance' and is_visible(v) then
-                ui.set(dt[1], false)
-            end
-    
-            if trace_line and ui.get(ui_element.combo) == 'Teleport out (test)' then
-                ui.set(dt[1], false)
-            end
-        end
-    end
 end
 
-client.set_event_callback('paint_ui', function()
-    SetTableVisibility({ui_element.combo, ui_element.weapons, ui_element.hotkey}, ui.get(ui_element.enable))
-    SetTableVisibility({ui_element.dist}, ui.get(ui_element.enable) and ui.get(ui_element.combo) == 'Distance')
-    SetTableVisibility({ui_element.pred_dist, ui_element.pred_ticks}, ui.get(ui_element.enable) and ui.get(ui_element.combo) == 'Predicted distance')
-    SetTableVisibility({ui_element.out_ticks}, ui.get(ui_element.enable) and ui.get(ui_element.combo) == 'Teleport out (test)')
+
+
+
+
+
+client.set_event_callback("run_command", on_run_command)
+client.set_event_callback("setup_command", on_setup_command)
+
+client.set_event_callback("shutdown", function()
+    ui.set_visible(references.roll[1], true)
 end)
-
-local function handle_callbacks(state)
-	local callback = (state) and client.set_event_callback or client.unset_event_callback
-	callback('setup_command', on_setup)
-end
-
-ui.set_callback(ui_element.enable, handle_callbacks)
-handle_callbacks(ui.get(ui_element.enable))
-
-
------AUTOSMOKE
-local csgo_weapons = require 'gamesense/csgo_weapons'
-
-
-local in_attack2
-local needed_player
-local has_molly
-local throwed
-local can_hit_us
-local throwed_smoke
-local time = 0
-
---- kibit staff----
-local math_rad  = math.rad
-local math_sqrt = math.sqrt
-local math_sin  = math.sin
-local math_cos  = math.cos
----kibit staff---
-
-local function vec3_dot(ax, ay, az, bx, by, bz)
-	return ax*bx + ay*by + az*bz
-end
-
-local function vec3_normalize(x, y, z)
-	local len = math_sqrt(x * x + y * y + z * z)
-	if len == 0 then
-		return 0, 0, 0
-	end
-	local r = 1 / len
-	return x*r, y*r, z*r
-end
-
-local function angle_to_vec(pitch, yaw)
-	local p, y = math_rad(pitch), math_rad(yaw)
-	local sp, cp, sy, cy = math_sin(p), math_cos(p), math_sin(y), math_cos(y)
-	return cp*cy, cp*sy, -sp
-end
-
-local function get_fov_cos(ent, vx,vy,vz, lx,ly,lz)
-	local ox,oy,oz = entity.get_prop(ent, "m_vecOrigin")
-	if ox == nil then
-		return -1
-	end
-
-	-- get direction to player
-	local dx,dy,dz = vec3_normalize(ox-lx, oy-ly, oz-lz)
-	return vec3_dot(dx,dy,dz, vx,vy,vz)
-end
-
-------- enemy closest to crosshair by kibit------
-
-local function get_nearest()
-    local entindex = entity.get_local_player()
-	if entindex == nil then return end
-	local lx,ly,lz = entity.get_prop(entindex, "m_vecOrigin")
-	if lx == nil then return end
-    local players = entity.get_players(true)	
-	local pitch, yaw = client.camera_angles()
-	local vx, vy, vz = angle_to_vec(pitch, yaw)
-	local closest_fov_cos = -1
-    for i=1, #players do
-        local idx = players[i]
-		if entity.is_alive(idx) then
-			local fov_cos = get_fov_cos(idx, vx,vy,vz, lx,ly,lz)
-			if fov_cos > closest_fov_cos then
-				closest_fov_cos = fov_cos
-                needed_player = idx
-			end
-		end
-    end
-end
-------- enemy closest to crosshair by kibit------
-
-local function lp_hittable()
-    if needed_player == nil then return end
-	local local_player = entity.get_local_player()
-	local l_x, l_y, l_z = entity.hitbox_position(local_player, 0)
-	local x, y, z = entity.hitbox_position(needed_player, 0)
-    local check, dmg = client.trace_bullet(needed_player, x, y, z, l_x, l_y, l_z)
-    return check
-end
+--rolls
 
 
 
-local function on_setup_command(e)
-    if not ui.get(hk_autosmoke) then return end
-    get_nearest()
-    local local_player = entity.get_local_player()
-    local nextAttack = entity.get_prop(local_player,"m_flNextAttack") 
-    nextAttack = nextAttack - globals.curtime()
-    local weapon_ent = entity.get_player_weapon(local_player)
-	if weapon_ent == nil then return end
-	local weapon = csgo_weapons(weapon_ent)
-    if weapon == nil then return end
-    can_hit_us = lp_hittable()
-    if weapon.idx == 45 then 
-        if can_hit_us ~= nil or not has_molly and not throwed and time < globals.curtime() then
-        client.exec("slot2")
-        client.exec("slot1")
-        time = globals.curtime() + 0.2
-        --has_molly = false
 
-        client.log("slot2") --  debug
-        client.log("slot1") --  debug
-        elseif nextAttack <= 0 and in_attack2 == 0 and throwed and not throwed_smoke then 
-        e.allow_send_packet = true
-        e.pitch = 89
-        e.in_attack2 = 1
-        e.forwardmove = 0
-        e.sidemove = 0  
-        client.delay_call(0.12, function ()
-            throwed = false
-        end)
-        client.log("throwed")
-        end
-    else
-        if can_hit_us == nil and has_molly and time < globals.curtime() then
-        client.exec("use weapon_smokegrenade") 
-        time = globals.curtime() + 0.2
-        client.log("use weapon_smokegrenade") --  debug
-        end
-    end
-    in_attack2 = e.in_attack2
-end
+--indi
+local refs = {
+    dt = { ui_reference("RAGE", "Other", "Double tap") },
+    fd = ui_reference("RAGE", "Other", "Duck peek assist"),
+    baim = ui_reference  ("RAGE", "Other", "Force body aim"),
+    safe = ui_reference("RAGE", "Aimbot", "Force safe point"),
+    hs = { ui_reference("AA", "Other", "On shot anti-aim") },
+}
 
-local function on_item_equip(e)
-    if not ui.get(hk_autosmoke) then return end
-    local victim = client.userid_to_entindex(e.userid)
-    if victim ~= needed_player then return end
-    if e.item == "molotov" or e.item == "incgrenade" then
-        has_molly = true
-    elseif has_molly then
-        has_molly = false
-    end
-end
-
-local function on_grenade_thrown(e)
-    if not ui.get(hk_autosmoke) then return end
-    local victim = client.userid_to_entindex(e.userid)
-    if victim == needed_player and e.weapon == "molotov" or e.weapon == "incgrenade" then throwed = true 
-    client.delay_call(5, function ()
-        throwed = false
-    end)
-    elseif victim == entity.get_local_player() and e.weapon == "smokegrenade" then throwed_smoke = true
-    client.delay_call(5, function ()
-        throwed_smoke = false
-    end)
-    end
-end
-
-
-local function on_paint(e)
-    if not ui.get(hk_autosmoke) then return end
-    local r,g,b 
-    if throwed then r,g,b = 247,12,12 else r,g,b = 0,230,255 end
-    renderer.indicator(r,g,b,255, "AUTOSMOKE")
-end
-
-
-ui.set_callback(autosmoke, function()
-    if ui.get(autosmoke) then
-        client.set_event_callback("setup_command", on_setup_command)
-        client.set_event_callback("item_equip", on_item_equip)
-        client.set_event_callback("grenade_thrown", on_grenade_thrown)
-        client.set_event_callback("paint", on_paint)
-	else
-		client.unset_event_callback("setup_command", on_setup_command)
-        client.unset_event_callback("item_equip", on_item_equip)
-        client.unset_event_callback("grenade_thrown", on_grenade_thrown)
-        client.unset_event_callback("paint", on_paint)
-	end
-end)
 
 function charged(delay)
     local me = entity.get_local_player()
@@ -1041,13 +535,6 @@ function charged(delay)
 end
 
 
-local refs = {
-    dt = { ui_reference("RAGE", "Other", "Double tap") },
-    fd = ui_reference("RAGE", "Other", "Duck peek assist"),
-    baim = ui_reference  ("RAGE", "Other", "Force body aim"),
-    safe = ui_reference("RAGE", "Aimbot", "Force safe point"),
-    hs = { ui_reference("AA", "Other", "On shot anti-aim") },
-}
 
 lerp = function(start, end_pos, time, delta)
     if (math_abs(start - end_pos) < (delta or 0.01)) then return end_pos end
@@ -1066,7 +553,7 @@ local r_lerp, r1_lerp, g_lerp, g1_lerp, b_lerp, b1_lerp, dt_anim, os_anim, baim_
 
 client.set_event_callback("paint_ui", function()
 
-local state_ind = ui.get(visuals.main_switch)
+local state_ind = ui.get(a_b)
 
 local firststyle = ui.get(visuals.ind_select) == "First"
 local secondstyle = ui.get(visuals.ind_select) == "Second"
@@ -1117,7 +604,7 @@ local function indicators()
 
     local should_work = true
 
-    if not ui.get(visuals.main_switch) then should_work = false end
+    if not ui.get(a_b) then should_work = false end
 
     if should_work then
         global_alpha = lerp(global_alpha , 1 , 0.045 ,0.05)
@@ -1143,8 +630,7 @@ local function indicators()
     renderer.rectangle(center[1] - (ind_size[1] / 2) + 2, center[2] + 8, (ind_size[1]) * rect_anim, 2, clr2[1], clr2[2], clr2[3], clr2[4] * global_alpha)
 
 
-    renderer_text(center[1], center[2] + 15 + offset, clr3[1], clr3[2], clr3[3], clr3[4] * global_alpha, "-c", 0, "%  " ..state)
-    offset = offset + 8
+    
 
     if dt_anim ~= 0 then
         renderer_text(center[1], center[2] + 15 + offset, ui_get(refs.dt[2]) and (charged(0.15) and clr3[1] or 255) or 255, ui_get(refs.dt[2]) and (charged(0.15) and clr3[2] or 25) or 255, ui_get(refs.dt[2]) and (charged(0.15) and clr3[3] or 25) or 255, (ui_get(refs.dt[2]) and 255 * global_alpha * dt_anim or 100 * global_alpha * dt_anim) , "-c", 0, "DT")
@@ -1182,58 +668,12 @@ end
         renderer.text(cx, cy + 50, 255, 255, 255, 255 * global_alpha, 'c', 0, 'KRIPSI AA')
     end
 end
-
-
----MISS LOGS
-local color_log = client.color_log
-
--- hitgroup name creds: sapphyrus
-
-local hitgroup_names = {
-    "generic",
-    "head",
-    "chest",
-    "stomach",
-    "left arm",
-    "right arm",
-    "left leg",
-    "right leg",
-    "neck",
-    "?",
-    "gear"
-}
-
-
-
-
-local function on_aim_missed( event )
-    if ui.get( logging_enabled_checkbox ) then
-      output = '[ KRIPSI AA ] missed ' .. entity.get_player_name( event.target ) .. ' | reason: ' .. event.reason .. ' | target hitgroup: '.. hitgroup_names[ event.hitgroup + 1 ] .. ' | hitchance: ' .. event.hit_chance
-  
-      -- so we can tell what it is without reading it
-      if event.reason == 'spread' then
-        color_log( 255, 120, 0, output)
-      elseif event.reason == 'resolver' then
-        color_log( 255, 0, 0, output)
-      else
-        color_log( 255, 255, 255, output)
-      end
-    end
-end
-
-client.set_event_callback( "aim_miss", on_aim_missed )
-
-local function on_aim_hit( event )
-  if ui.get( logging_enabled_checkbox ) then
-    output = '[ KRIPSI AA ] hit ' .. entity.get_player_name( event.target ) .. ' for ' .. event.damage .. ' | ' .. entity.get_prop( event.target, 'm_iHealth' ) .. ' health left' .. ' | hitgroup: ' .. hitgroup_names[ event.hitgroup + 1 ] .. ' | hitchance: ' .. event.hit_chance
-    color_log( 0, 255, 0, output )
-  end
-end
-
-client.set_event_callback( "aim_hit", on_aim_hit )
-
-
-
---callbacks
-client.set_event_callback("run_command", run_command)     
 client.set_event_callback("paint", indicators)  
+--indi
+
+client_set_event_callback("player_hurt", on_player_hurt)
+client_set_event_callback("paint", on_paint)
+client_set_event_callback("round_prestart", prestart)
+client.set_event_callback("run_command", run_command)
+client.set_event_callback("run_command1", run_command)
+
