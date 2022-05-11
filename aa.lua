@@ -38,7 +38,7 @@ local velocity_slider = ui.new_slider("AA", "Anti-aimbot angles", "Roll Velocity
 local stamina_slider = ui.new_slider("AA", "Anti-aimbot angles", "Stamina Recovery", 0, 80, 70, true, " ")
 local in_air_roll = ui.new_slider("AA","Anti-aimbot angles","Customized Roll in air",  -50, 50, 50, true, " ")
 local slider_roll = ui.new_slider("AA", "Anti-aimbot angles", "Roll", -50, 50, 50, true, "°")
-
+local enable_adfucker = ui.new_hotkey("AA", "Anti-aimbot angles", "KRIPSI AS (AIR-SPAM)")
 local ab_p = 1 --antibrute_phase
 local ab_p_r = 1
 local lastsent_p = globals.tickcount()
@@ -65,7 +65,7 @@ local name = persona_api.GetName()
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 client.color_log(21, 235, 220,  "                         KRIPSI AA (V2) INJECTED       ")
 client.color_log(215, 115, 222, "              (︶︹︺) Coded by KRIPSI#5061 (︶︹︺)               ")
-client.color_log(235, 221, 21,  "                    Last Updated: 08/05/2022.               ")
+client.color_log(235, 221, 21,  "                    Last Updated: 11/05/2022.               ")
 client.color_log(255, 255, 255, "|--------------------------------------------------------|")
 
 
@@ -324,7 +324,7 @@ local g_pInput =
 )
 
 local lua_log = function(...) --inspired by sapphyrus' multicolorlog
-    client.color_log(255, 59, 59, "[ KRIPSI AA ]\0")
+    client.color_log(255, 59, 59, "[ KRIPSI ROLL ]\0")
     local arg_index = 1
     while select(arg_index, ...) ~= nil do
         client.color_log(217, 217, 217, " ", select(arg_index, ...), "\0")
@@ -671,6 +671,30 @@ end
 client.set_event_callback("paint", indicators)  
 --indi
 
+--AirSpam
+
+
+local function funcspidorasinou()
+    local edge = ui.reference("misc", "movement", "Air duck")
+  if ui.get(enable_adfucker) then
+    local airduck_type = math.random(0, 3)
+    if airduck_type <= 1 then
+      ui.set(edge, "On")
+    end
+    if airduck_type == 0 then
+      ui.set(edge, "Spam")
+    end
+    if airduck_type >= 2 then
+      ui.set(edge, "Fake")
+    end
+  end
+end
+--AirEnd
+
+
+
+
+client.set_event_callback('paint', funcspidorasinou)
 client_set_event_callback("player_hurt", on_player_hurt)
 client_set_event_callback("paint", on_paint)
 client_set_event_callback("round_prestart", prestart)
